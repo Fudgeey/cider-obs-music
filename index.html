@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+
+        <title>Title</title>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .main {
+                font-family: 'Roboto', sans-serif;
+                height: 100%;
+            }
+
+            .container {
+                height: 100vh;
+                perspective: 1500px;
+                overflow: hidden;
+            }
+
+            .content {
+                height: 100vh;
+                width: 100vw;
+                display: flex;
+                padding: 15px;
+                overflow: hidden;
+                -webkit-box-align: center;
+                align-items: center;
+                position: relative;
+                -webkit-box-pack: start;
+                justify-content: flex-start;
+            }
+
+            .object {
+                transform: scale(1);
+                opacity: 1;
+                height: 125px;
+                box-sizing: border-box;
+                min-width: 125px;
+                border-radius: 15px;
+                margin-left: 25px;
+                position: relative;
+                top: auto;
+                box-shadow: rgb(0 0 0 / 40%) 0px 10px 21px 0px;
+            }
+
+            .one {
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                top: 0;
+                left: 0;
+                overflow: hidden;
+                border-radius: 15px;
+            }
+
+            .one_one {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 5;
+            }
+
+            .one_two {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 0;
+                filter: blur(10px);
+                background: url("https://lastfm.freetls.fastly.net/i/u/300x300/9e3232f437c90e5ece62dd0b5df2950b.jpg") center center / cover no-repeat;
+                transition: background 0.6s ease 0s;
+            }
+
+            .two {
+                height: 125px;
+                width: 125px;
+                position: absolute;
+                z-index: 10;
+                transform-origin: 50% 50%;
+                overflow: hidden;
+                transform: scale(1.25);
+                border-radius: 15px;
+                box-shadow: rgba(0, 0, 0, 0.4) 0px 10px 21px 0px;
+            }
+
+            .two_one {
+                transform: scale(1);
+                opacity: 1;
+                height: 125px;
+                width: 125px;
+                position: absolute;
+                top: 0;
+                background: black;
+                transform-origin: 50% 50%;
+                border-radius: 15px;
+            }
+
+            .two_two {
+                transform: scale(0);
+                opacity: 0;
+                height: 125px;
+                width: 125px;
+                position: absolute;
+                top: 0;
+                background: black;
+                transform-origin: 50% 50%;
+                border-radius: 15px;
+            }
+
+            .three {
+                width: 228px;
+                margin-left: 125px;
+                z-index: 5;
+                position: relative;
+                height: 100%;
+                display: flex;
+                -webkit-box-align: center;
+                align-items: center;
+                overflow: hidden;
+                color: rgb(255, 255, 255);
+                max-width: 100%;
+            }
+
+            .three_one {
+                position: absolute;
+                left: 25px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .title {
+                transform: translateY(0px);
+                opacity: 1;
+                font-weight: bold;
+                font-size: 24px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                position: relative;
+                z-index: 2;
+                overflow: hidden;
+            }
+
+            .artist {
+                transform: translateY(0px);
+                opacity: 1;
+                margin-top: 5px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="main">
+            <div class="container">
+                <div class="content">
+                    <div class="object">
+                        <div class="one">
+                            <div class="one_one"></div>
+                            <div class="one_two"></div>
+                        </div>
+
+                        <div class="two">
+                            <img class="two_one" src="https://lastfm.freetls.fastly.net/i/u/300x300/9e3232f437c90e5ece62dd0b5df2950b.jpg" style="transform: scale(1); opacity: 1;">
+                            <img class="two_two" src="https://lastfm.freetls.fastly.net/i/u/300x300/9e3232f437c90e5ece62dd0b5df2950b.jpg" style="transform: scale(0); opacity: 0;">
+                        </div>
+
+                        <div class="three">
+                            <div class="three_one">
+                                <div class="title">Swim</div>
+                                <div class="artist">Chase Atlantic</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const socket = new WebSocket('ws://localhost:26369');
+
+            socket.addEventListener('message', (event) => {
+                let data = JSON.parse(event.data);
+
+                if(data.type === 'playbackStateUpdate') {
+                    let artist = data.data.artistName;
+                    let title = data.data.name;
+                    let artwork = data.data.artwork.url.replace('{w}x{h}', '2000x2000');
+
+                    document.getElementsByClassName('one_two')[0].style.background = `url("${artwork}") center center / cover no-repeat`
+                    document.getElementsByClassName('two_one')[0].src = artwork;
+                    document.getElementsByClassName('two_two')[0].src = artwork;
+
+                    document.getElementsByClassName('title')[0].innerHTML = title;
+                    document.getElementsByClassName('artist')[0].innerHTML = artist;
+                }
+            });
+        </script>
+    </body>
+</html>
