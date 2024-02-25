@@ -194,7 +194,7 @@
             socket.addEventListener('message', (event) => {
                 let data = JSON.parse(event.data);
 
-                if(data.type === 'playbackStateUpdate') {
+                if(data.type === 'playbackStatus.playbackTimeDidChange') {
                     let artist = data.data.artistName;
                     let title = data.data.name;
                     let artwork = data.data.artwork.url.replace('{w}x{h}', '2000x2000');
