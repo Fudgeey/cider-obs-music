@@ -189,7 +189,7 @@
         </div>
 
         <script>
-            const socket = new WebSocket('ws://localhost:10766');
+            const socket = new WebSocket('ws://localhost:10766/ws');
 
             socket.addEventListener('message', (event) => {
                 let data = JSON.parse(event.data);
